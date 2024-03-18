@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="149686d6-689c-491b-8ce8-da585f2793a5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/project_django.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/project_django.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/catalog/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/catalog/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/catalog/management/commands/populate_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/catalog/management/commands/populate_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/catalog/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/catalog/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myproject/catalog/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/myproject/catalog/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +26,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
