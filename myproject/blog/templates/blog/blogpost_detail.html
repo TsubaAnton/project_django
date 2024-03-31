@@ -1,0 +1,12 @@
+{% extends 'catalog/templates/base.html' %}
+{% load static %}
+
+{% block title %}Информация о блоге{% endblock %}
+
+{% block content %}
+    <h1>{{ object.title }}</h1>
+    <p>Содержимое: {{ object.content }}</p>
+    <p>Превью: {{ object.image }}</p>
+    <p>Дата создания: {{ object.created_at }}</p>
+    <p>Количество просмотров: {{ object.views_count }}</p>
+{% endblock %}

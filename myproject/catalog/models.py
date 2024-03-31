@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.timezone import now
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -31,3 +30,6 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+
+
+
