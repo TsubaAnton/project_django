@@ -11,4 +11,9 @@
     <p>Цена: {{ product.price }} рублей</p>
     <p>Дата создания: {{ product.created_at }}</p>
     <p>Дата последнего изменения: {{ product.updated_at }}</p>
+    {% if active_versions %}
+        <p>Активная версия: {{ active_versions.0.name }}</p>
+    {% else %}
+        <p>Нет активной версии</p>
+    {% endif %}
 {% endblock %}
