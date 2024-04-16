@@ -23,6 +23,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='Цена за покупку', default=0)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата последнего изменения')
+    publication_sign = models.BooleanField(verbose_name='Признак публикации', default=False, **NULLABLE)
 
     def __str__(self):
         return self.name
@@ -31,23 +32,15 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
 
-    def get_active_version(self):
-        try:
-            return self.version_set.get(current_version_indication=True)
-        except Version.DoesNotExist:
-            return None
-        except Version.MultipleObjectsReturned:
-            return self.version_set.filter(current_version_indication=True).first()
-
 
 class Version(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
     number = models.IntegerField(verbose_name='Номер версии')
-    name = models.CharField(max_length=150, verbose_name='Название версии')
+    version_name = models.CharField(max_length=150, verbose_name='Название версии')
     current_version_indication = models.BooleanField(default=False, verbose_name='Признак текущей версии')
 
     def __str__(self):
-        return self.name
+        return self.version_name
 
     class Meta:
         verbose_name = 'Версия'

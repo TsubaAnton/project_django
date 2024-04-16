@@ -1,22 +1,28 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Layout
 from django import forms
 
 from .models import Product, Version
 
 
 class ProductForm(forms.ModelForm):
-    version = forms.ModelChoiceField(queryset=Version.objects.all(), empty_label=None)
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'image', 'category', 'price',)
+        fields = ('name', 'description', 'image', 'category', 'price', 'publication_sign')
 
     def __init__(self, *args, **kwargs):
-        product = kwargs.pop('product', None)
-        super(ProductForm, self).__init__(*args, **kwargs)
-        if product:
-            self.fields['version'].queryset = Version.objects.filter(product=product)
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'name',
+            'description',
+            'image',
+            'category',
+            'price',
+            'publication_sign',
+            Submit('submit', 'Submit', css_class='btn-primary')
+        )
 
     def clean_name(self):
         cleaned_data = self.cleaned_data.get('name')
@@ -36,21 +42,17 @@ class ProductForm(forms.ModelForm):
 
 
 class VersionForm(forms.ModelForm):
-    class Meta:
-        model = Version
-        fields = ('number', 'name', 'current_version_indication')
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['number'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Enter version number'
-        })
-        self.fields['name'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Enter version name'
-        })
-        self.fields['current_version_indication'].widget.attrs.update({
-            'class': 'form-check-input',
-            'id': 'current_version_checkbox'
-        })
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'product',
+            'number',
+            'version_name',
+            'current_version_indication',
+            Submit('submit', 'Submit', css_class='btn-primary')
+        )
+
+    class Meta:
+        model = Version
+        fields = '__all__'

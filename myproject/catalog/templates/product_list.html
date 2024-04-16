@@ -16,7 +16,14 @@
                         <p class="card-text">{{ product.description|slice:":100" }}</p>
                         <h1 class="card-title pricing-card-title">Цена: {{ product.price }} рублей</h1>
                         <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <img class="card-img-top" src="{% mymedia product.image %}" width="300" height="200" >
+                            <img class="card-img-top" src="{% mymedia product.image %}" width="300" height="200">
+                            {% for version in product.version_set.all %}
+                                {% if version.current_version_indication %}
+                                    <p><strong>Текущая версия:</strong> {{ version.version_name }} (№{{ version.number }})</p>
+                                {% else %}
+                                    <p><strong>Версия:</strong> {{ version.version_name }} (№{{ version.number }})</p>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                         <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>
                         <a href="{% url 'catalog:product_update' product.id %}" class="btn btn-lg btn-block btn-outline-primary">Редактировать</a>

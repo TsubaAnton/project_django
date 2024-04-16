@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from .forms import ProductForm, VersionForm
@@ -9,17 +10,13 @@ class HomeListView(ListView):
     model = Product
     template_name = 'product_list.html'
 
+    def get_queryset(self):
+        return Product.objects.prefetch_related('version_set')
+
 
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'product/product_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = self.object
-        active_versions = product.version_set.filter(current_version_indication=True)
-        context['active_versions'] = active_versions
-        return context
 
 
 class ContactsTemplateView(TemplateView):
@@ -32,41 +29,42 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('catalog:home')
     template_name = 'product/product_form.html'
 
-    def form_valid(self, form):
-        product = form.save(commit=False)
-        product.save()
-        selected_version = form.cleaned_data['version']
-        selected_version.product = product
-        selected_version.save()
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     product = form.save(commit=False)
+    #     product.save()
+    #     return redirect('catalog:home')
 
 
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
-    template_name = 'product/product_form.html'
+    template_name = 'product/product_form_formset.html'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if hasattr(self, 'object'):
-            kwargs['product'] = self.object
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     return kwargs
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        product = self.object
-        active_versions = Version.objects.filter(product=product, current_version_indication=True)
-        context_data['active_versions'] = active_versions
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+
         return context_data
 
     def form_valid(self, form):
-        product = form.save(commit=False)
-        product.save()
-        selected_version = form.cleaned_data['version']
-        selected_version.product = product
-        selected_version.save()
-        return super().form_valid(form)
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+
+        form_valid = super().form_valid(form)
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return form_valid
 
 
 class ProductDeleteView(DeleteView):
@@ -78,8 +76,12 @@ class ProductDeleteView(DeleteView):
 class VersionCreateView(CreateView):
     model = Version
     form_class = VersionForm
-    template_name = 'version_create.html'
+    template_name = 'version/version_form.html'
     success_url = reverse_lazy('catalog:home')
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['version_form'] = self.get_form()
+        return context_data
 
 

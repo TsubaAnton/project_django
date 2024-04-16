@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 
     'catalog',
     'blog',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +60,10 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR, 'catalog', 'templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',  # Ваши собственные шаблоны
+            BASE_DIR / 'venv' / 'lib' / 'site-packages' / 'crispy_forms' / 'templates',  # Шаблоны Crispy Forms
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,5 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

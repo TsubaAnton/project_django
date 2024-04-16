@@ -16,6 +16,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
-    list_display = ('product', 'number', 'name', 'current_version_indication',)
-    list_filter = ('number', 'name',)
-    search_fields = ('name',)
+    list_display = ('product', 'number', 'version_name', 'current_version_indication',)
+    list_filter = ('number', 'version_name',)
+    search_fields = ('version_name',)
