@@ -18,7 +18,7 @@ class HomeListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        is_moderator = Group.objects.filter(name='moderators').exists() or user.groups.filter(name='moderators').exists()
+        is_moderator = user.groups.filter(name='moderators').exists()
         context['is_moderator'] = is_moderator
         return context
 
@@ -81,7 +81,11 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         user = self.request.user
         obj = self.get_object()
 
-        return user.groups.filter(name='moderators').exists() or user == obj.author
+        is_author = user = obj.author
+
+        is_moderator = user.groups.filter(name='moderators').exists()
+        #return user.groups.filter(name='moderators').exists() or user == obj.author
+        return is_author or is_moderator
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
