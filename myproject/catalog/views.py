@@ -1,7 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
-
+from django.contrib.auth.models import Group
 from .forms import ProductForm, VersionForm
 from .management.commands.mail import send_order_email
 from .models import Product, Version
@@ -14,6 +14,13 @@ class HomeListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Product.objects.prefetch_related('version_set')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        is_moderator = Group.objects.filter(name='moderators').exists() or user.groups.filter(name='moderators').exists()
+        context['is_moderator'] = is_moderator
+        return context
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -39,7 +46,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:home')
@@ -69,6 +76,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             formset.instance = self.object
             formset.save()
         return form_valid
+
+    def test_func(self):
+        user = self.request.user
+        obj = self.get_object()
+
+        return user.groups.filter(name='moderators').exists() or user == obj.author
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
