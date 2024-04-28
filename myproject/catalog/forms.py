@@ -41,6 +41,30 @@ class ProductForm(forms.ModelForm):
         return cleaned_data
 
 
+class ProductModeratorForm(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ('description', 'category')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'description',
+            'category',
+            Submit('submit', 'Submit', css_class='btn-primary')
+        )
+
+    def clean_description(self):
+        cleaned_data = self.cleaned_data.get('description')
+        if cleaned_data.lower() in (
+                'казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'обман', 'полиция',
+                'радар'):
+            raise forms.ValidationError(f"Нельзя использовать слово {cleaned_data} в описании")
+        return cleaned_data
+
+
 class VersionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
