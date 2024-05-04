@@ -16,6 +16,11 @@ from environs import Env
 
 env = Env()
 env.read_env()
+from dotenv import load_dotenv
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+# dot_env = os.path.join(BASE_DIR, '.env')
+# load_dotenv(dotenv_path=dot_env)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -151,9 +156,17 @@ EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
-EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+CACHE_ENABLED = True
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379",
+        }
+    }

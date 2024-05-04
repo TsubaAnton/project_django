@@ -4,8 +4,10 @@ from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from .forms import ProductForm, VersionForm, ProductModeratorForm
 from .management.commands.mail import send_order_email
-from .models import Product, Version
+from .models import Product, Version, Category
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
+
+from .services.category import all_category
 
 
 class HomeListView(LoginRequiredMixin, ListView):
@@ -88,14 +90,14 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         is_author = user = obj.author
 
         is_moderator = user.groups.filter(name='moderators').exists()
-        #return user.groups.filter(name='moderators').exists() or user == obj.author
+        # return user.groups.filter(name='moderators').exists() or user == obj.author
         return is_author or is_moderator
 
     def get_form_class(self):
         user = self.request.user
         if user == self.object.author:
             return ProductForm
-        #elif user.has_perm('catalog.can_change_description_product') and user.has_perm('catalog.can_change_category_product'):
+        # elif user.has_perm('catalog.can_change_description_product') and user.has_perm('catalog.can_change_category_product'):
         elif user.groups.filter(name='moderators').exists():
             return ProductModeratorForm
         else:
@@ -120,3 +122,19 @@ class VersionCreateView(CreateView):
         return context_data
 
 
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'category/category_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['categories'] = all_category()
+        return context
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'category/category_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['categories'] = all_category()
+        return context
