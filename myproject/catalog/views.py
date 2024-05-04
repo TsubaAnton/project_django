@@ -130,11 +130,6 @@ class CategoryListView(ListView):
         context = super().get_context_data()
         context['categories'] = all_category()
         return context
-class CategoryListView(ListView):
-    model = Category
-    template_name = 'category/category_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['categories'] = all_category()
-        return context
+
+
